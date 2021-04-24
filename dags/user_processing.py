@@ -2,6 +2,7 @@ import json
 from datetime import datetime
 
 from airflow import DAG
+from airflow.operators.bash import BashOperator
 from airflow.operators.dummy import DummyOperator
 from airflow.operators.python import PythonOperator
 from airflow.providers.http.operators.http import SimpleHttpOperator
@@ -73,6 +74,11 @@ with DAG(
         python_callable=_processing_user,
     )
 
+    storing_user = BashOperator(
+        task_id='storing_user',
+        bash_command='echo -e ".separator ","\n.import /tmp/processed_user.csv users" | sqlite3 /home/airflow/airflow/airflow.db',
+    )
+
     end = DummyOperator(task_id='end')
 
-    start >> creating_table >> is_api_available >> extracting_user >> end
+    start >> creating_table >> is_api_available >> extracting_user >> processing_user >> storing_user >> end
