@@ -2,6 +2,7 @@ from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
+from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.sqlite.operators.sqlite import SqliteOperator
 
 default_args = {
@@ -30,6 +31,12 @@ with DAG(
             ''',
     )
 
+    is_api_available = HttpSensor(
+        task_id='is_api_available',
+        http_conn_id='user_api',
+        endpoint='api/',
+    )
+
     end = DummyOperator(task_id='end')
 
-    start >> creating_table >> end
+    start >> creating_table >> is_api_available >> end
