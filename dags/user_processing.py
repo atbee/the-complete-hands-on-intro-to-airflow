@@ -43,7 +43,7 @@ with DAG(
         task_id='creating_table',
         sqlite_conn_id='db_sqlite',
         sql='''
-            CREATE TABLE users (
+            CREATE TABLE IF NOT EXISTS users (
                 email TEXT NOT NULL PRIMARY KEY,
                 firstname TEXT NOT NULL,
                 lastname TEXT NOT NULL,
