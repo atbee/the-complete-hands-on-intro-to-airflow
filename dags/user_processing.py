@@ -1,7 +1,9 @@
+import json
 from datetime import datetime
 
 from airflow import DAG
 from airflow.operators.dummy import DummyOperator
+from airflow.providers.http.operators.http import SimpleHttpOperator
 from airflow.providers.http.sensors.http import HttpSensor
 from airflow.providers.sqlite.operators.sqlite import SqliteOperator
 
@@ -37,6 +39,15 @@ with DAG(
         endpoint='api/',
     )
 
+    extracting_user = SimpleHttpOperator(
+        task_id='extracting_user',
+        http_conn_id='user_api',
+        endpoint='api/',
+        method='GET',
+        response_filter=lambda response: json.loads(response.text),
+        log_response=True,
+    )
+
     end = DummyOperator(task_id='end')
 
-    start >> creating_table >> is_api_available >> end
+    start >> creating_table >> is_api_available >> extracting_user >> end
