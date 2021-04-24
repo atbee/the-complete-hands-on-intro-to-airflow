@@ -20,14 +20,14 @@ with DAG(
         sqlite_conn_id='db_sqlite',
         sql='''
             CREATE TABLE users (
-                user_id INTEGER PRIMARY KEY AUTOINCREMENT,
+                email TEXT NOT NULL PRIMARY KEY,
                 firstname TEXT NOT NULL,
                 lastname TEXT NOT NULL,
                 country TEXT NOT NULL,
                 username TEXT NOT NULL,
                 password TEXT NOT NULL
-            )
-        ''',
+            );
+            ''',
     )
 
     end = DummyOperator(task_id='end')
