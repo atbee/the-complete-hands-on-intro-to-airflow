@@ -10,6 +10,8 @@ with DAG(
     'parallel_dag',
     schedule_interval='@daily',
     default_args=default_args,
+    concurency=2,
+    max_active_runs=1,
     catchup=False,
 ) as dag:
     task_1 = BashOperator(
