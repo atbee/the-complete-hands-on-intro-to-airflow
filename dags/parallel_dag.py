@@ -28,7 +28,7 @@ with DAG(
             'parallel_dag',
             'processing_tasks',
             default_args,
-        ) ,
+        ),
     )
 
     task_4 = BashOperator(
